@@ -1,13 +1,13 @@
 <script setup> 
 import Homepage from './components/home/Homepage.vue'; 
-import NavigationVue from './components/navigation/Navigation.vue';
+// import NavigationVue from './components/navigation/Navigation.vue';
 import FooterVue from './components/footer/Footer.vue';
 </script>
 
 <template>
   <div class="w-screen h-screen overflow-y-hidden overflow-x-hidden">
   <!-- top navigation -->
-  <NavigationVue />
+  <!-- <NavigationVue /> -->
     <!-- body -->
     <router-view></router-view>
     <!-- footer -->
