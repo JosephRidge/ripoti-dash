@@ -1,14 +1,17 @@
 <template>
   <div class="h-screen w-screen">
- <MapsVue/>
+    <NavigationVue :location="true" :summary="false" :prediction="false" :reports="false" />
+    <MapsVue />
   </div>
 </template>
 
-<script> 
-import MapsVue from '../maps/Maps.vue';
+<script>
+import MapsVue from "../maps/Maps.vue";
+import NavigationVue from "../navigation/Navigation.vue";
 export default {
-  components: { 
-    MapsVue
+  components: {
+    MapsVue,
+    NavigationVue,
   },
 };
 </script>

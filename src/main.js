@@ -14,6 +14,15 @@ import { createPinia } from "pinia";
 import Home from "./components/home/Homepage.vue";
 import Maps from "./components/maps/Maps.vue";
 
+//summary
+import Summary from "./components/summary/Summary.vue";
+
+//reports
+import Reports from "./components/reports/Reports.vue";
+
+// predictions
+import Predictions from "./components/predictions/Predictions.vue";
+
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
@@ -45,6 +54,21 @@ const routes = [
     path: "/locations",
     name: "Locations",
     component: Map,
+  },
+  {
+    path: "/summary",
+    name: "Summary",
+    component: Summary,
+  },
+  {
+    path: "/reports",
+    name: "Reports",
+    component: Reports,
+  },
+  {
+    path: "/predictions",
+    name: "Predictions",
+    component: Predictions,
   },
 ];
 // create the router instance
