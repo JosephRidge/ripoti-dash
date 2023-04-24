@@ -32,11 +32,14 @@
         :options="{ className: 'z-50 bg-green ' }"
         :lat-lng="[-1.2866208558120888, 36.82125025129386]"
       >
-        <!-- <l-icon
+      <l-icon
           class="transition ease-in-out duration-150 shadow-lg"
-          :icon-size="dynamicSize"
-          :icon-url="iconUrl"
-        /> -->
+          :icon-size="iconSize"
+          icon-url="https://firebasestorage.googleapis.com/v0/b/ripoti-97777.appspot.com/o/Group%2029.svg?alt=media&token=540fca35-6e4a-4bcd-b869-e3e03ee19ec5"
+        />
+        <l-popup>
+          Nairobi CBD Region
+        </l-popup>
       </l-marker>
       <l-polygon
         :lat-lngs="polygon.cbd"
@@ -52,11 +55,14 @@
         :options="{ className: 'z-50 bg-green ' }"
         :lat-lng="[-1.2627334573398628, 36.8110131111749]"
       >
-        <!-- <l-icon
+      <l-icon
           class="transition ease-in-out duration-150 shadow-lg"
-          :icon-size="dynamicSize"
-          :icon-url="iconUrl"
-        /> -->
+          :icon-size="iconSize"
+          icon-url="https://firebasestorage.googleapis.com/v0/b/ripoti-97777.appspot.com/o/Group%2029.svg?alt=media&token=540fca35-6e4a-4bcd-b869-e3e03ee19ec5"
+        />
+        <l-popup>
+          Parklands Region
+        </l-popup>
       </l-marker>
       <l-polygon
         :lat-lngs="parklandsPolygon.latlng"
@@ -71,12 +77,14 @@
       <l-marker
         :options="{ className: 'z-50 bg-green ' }"
         :lat-lng="[-1.3388665419722088, 36.717877557467034]"
-      >
-        <!-- <l-icon
+      >   <l-icon
           class="transition ease-in-out duration-150 shadow-lg"
-          :icon-size="dynamicSize"
-          :icon-url="iconUrl"
-        /> -->
+          :icon-size="iconSize"
+          icon-url="https://firebasestorage.googleapis.com/v0/b/ripoti-97777.appspot.com/o/Group%2029.svg?alt=media&token=540fca35-6e4a-4bcd-b869-e3e03ee19ec5"
+        />
+        <l-popup>
+          Karen Region
+        </l-popup>
       </l-marker>
       <l-polygon
         :lat-lngs="karenPolygon.latlng"
@@ -90,12 +98,14 @@
       <l-marker
         :options="{ className: 'z-50 bg-green ' }"
         :lat-lng="[-1.307040072969258, 36.813869756592226]"
-      >
-        <!-- <l-icon
+      >  <l-icon
           class="transition ease-in-out duration-150 shadow-lg"
-          :icon-size="dynamicSize"
-          :icon-url="iconUrl"
-        /> -->
+          :icon-size="iconSize"
+          icon-url="https://firebasestorage.googleapis.com/v0/b/ripoti-97777.appspot.com/o/Group%2029.svg?alt=media&token=540fca35-6e4a-4bcd-b869-e3e03ee19ec5"
+        />
+        <l-popup>
+          Madaraka Region
+        </l-popup>
       </l-marker>
       <l-polygon
         :lat-lngs="madarakaPolygon.latlng"
@@ -111,11 +121,14 @@
         :options="{ className: 'z-50 bg-green ' }"
         :lat-lng="[-1.3953666201650492, 36.75291056015351]"
       >
-        <!-- <l-icon
+      <l-icon
           class="transition ease-in-out duration-150 shadow-lg"
-          :icon-size="dynamicSize"
-          :icon-url="iconUrl"
-        /> -->
+          :icon-size="iconSize"
+          icon-url="https://firebasestorage.googleapis.com/v0/b/ripoti-97777.appspot.com/o/Group%2029.svg?alt=media&token=540fca35-6e4a-4bcd-b869-e3e03ee19ec5"
+        />
+        <l-popup>
+          Kajiado Region
+        </l-popup>
       </l-marker>
       <l-polygon
         :lat-lngs="dandoraPolygon.latlng"
@@ -161,7 +174,7 @@ export default {
       markerLatLng: [51.504, -0.159],
       iconWidth: 35,
       iconHeight: 20,
-      iconSize: 40,
+      iconSize: 30,
       //    iconUrl: "./assets/place.svg",
       //   rangerMarker: "./assets/ranger_marker.svg",
       //   rangerShed: "./assets/ranger_shed.svg",
