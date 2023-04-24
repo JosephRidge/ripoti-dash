@@ -30,7 +30,7 @@
           </span>
           <span>
             <h3 class="font-bold leading-tight">Problem Statement</h3>
-            <p class="text-sm text-gray-500">Gender Based Violence Outrise</p>
+            <p class="text-sm text-gray-500">Sexual Gender Based Violence Outrise</p>
           </span>
         </li>
         <li
@@ -45,7 +45,7 @@
             <h3 class="font-bold leading-tight">Data</h3>
             <p class="text-sm text-gray-500">
               Collection done via ripoti mobile app <br />
-              Preparation & Visualization done on dahsboard <br />
+              Preparation & Visualization done on dashboard <br />
             </p>
           </span>
         </li>
@@ -350,16 +350,144 @@
 <script>
 import Navigation from "../navigation/Navigation.vue";
 import Footer from "../footer/Footer.vue";
+import { getDatabase, ref, onValue } from "firebase/database";
+
 export default {
+  components: {
+    Navigation,
+  },
   data() {
     return {
       cases: 0,
+      policecases: 0,
       targetData: 1000,
+      probonos: 0,
+      hospital: 0,
+      casesReported: [],
+      casesKeys: [],
+
+      policeCasesReported: [],
+      policeCasesKeys: [],
+
+      users: [],
+      usersKeys: [],
+
+      probonoCasesReported: [],
+      probonoCasesKeys: [],
     };
   },
-  components: {
-    Navigation,
-    Footer,
+  methods: {
+    // get cases
+    getCases() {
+      const db = getDatabase();
+      const customerRef = ref(db, "cases");
+      onValue(customerRef, (snapshot) => {
+        const data = snapshot.val();
+        if (data != null) {
+        let keys = Object.keys(data);
+        for (let i = 0; i < keys.length; i++) {
+          let k = keys[i];
+          let values = data[k];
+          if (
+            !this.casesReported.includes(values) &&
+            !this.casesKeys.includes(k)
+          ) {
+            this.casesReported.push(values);
+            this.casesKeys.push(k);
+          }
+        }
+        this.cases = this.casesReported.length;
+      }
+      else{
+        this.cases = 0;
+      }
+      });
+    },
+
+    // police men
+    getPoliceCases() {
+      const db = getDatabase();
+      const customerRef = ref(db, "policeCases");
+      onValue(customerRef, (snapshot) => {
+        const data = snapshot.val();
+        if (data != null) {
+          let keys = Object.keys(data);
+          for (let i = 0; i < keys.length; i++) {
+            let k = keys[i];
+            let values = data[k];
+            if (
+              !this.policeCasesReported.includes(values) &&
+              !this.policeCasesKeys.includes(k)
+            ) {
+              this.policeCasesReported.push(values);
+              this.policeCasesKeys.push(k);
+            }
+          }
+          this.policecases = this.policeCasesReported.length;
+        } else {
+          this.policecases = 0;
+        }
+      });
+    },
+
+    // get probonos
+    getProbonos() {
+      const db = getDatabase();
+      const customerRef = ref(db, "probonos");
+      onValue(customerRef, (snapshot) => {
+        const data = snapshot.val();
+        if (data != null) {
+          let keys = Object.keys(data);
+          for (let i = 0; i < keys.length; i++) {
+            let k = keys[i];
+            let values = data[k];
+            if (
+              !this.probonoCasesReported.includes(values) &&
+              !this.probonoCasesKeys.includes(k)
+            ) {
+              this.probonoCasesReported.push(values);
+              this.probonoCasesKeys.push(k);
+            }
+          }
+          this.probonos = this.probonoCasesReported.length;
+        } else {
+          this.probonos = 0;
+        }
+      });
+    },
+
+    // get users
+    getUsers() {
+      const db = getDatabase();
+      const customerRef = ref(db, "users");
+      onValue(customerRef, (snapshot) => {
+        const data = snapshot.val();
+        if (data != null) { 
+        let keys = Object.keys(data);
+        for (let i = 0; i < keys.length; i++) {
+          let k = keys[i];
+          let values = data[k];
+          if (!this.users.includes(values) && !this.usersKeys.includes(k)) {
+            this.users.push(values);
+            this.usersKeys.push(k);
+          }
+        }
+        this.users = this.users.length;
+      }
+      else{
+        this.users = 0;
+      }
+      });
+    },
+
+    // get cases in police station
+    // <a href="https://iconscout.com/icons/police-station" target="_blank">Police Station Icon</a> by <a href="https://iconscout.com/contributors/smashingstocks">Smashing Stocks</a> on <a href="https://iconscout.com">IconScout</a>
+  },
+  mounted() {
+    this.getCases();
+    this.getProbonos();
+    this.getUsers();
+    this.getPoliceCases();
   },
 };
 </script>
