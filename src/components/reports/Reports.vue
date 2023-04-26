@@ -6,8 +6,8 @@
       :prediction="false"
       :reports="true"
     />
-
-    <div class="scale-90 h-64 mx-6" @click="showTable">
+<div v-show="tableVisible"  @click="showTable" class="rounded-2xl m-2 items-center px-4 w-fit h-fit bg-white border-2 border-orange-300 hover:border-orange-400 hover:cursor-pointer hover:bg-orange-100 rounded-lg flex-row md:max-w-xl dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700">close table</div>
+    <div class="scale-90 h-64 mx-6" @click="showTable" v-show="!tableVisible">
       <div
         class="rounded-2xl m-2 items-center h0fit h-fit bg-white border-2 border-orange-300 hover:border-orange-400 hover:cursor-pointer hover:bg-orange-100 rounded-lg flex-row md:max-w-xl dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700"
       >
@@ -69,7 +69,7 @@
         class="text-left rounded border-2 border-orange-200 rounded-md p-3"
       >
         <caption class="caption-top text-xs my-2 text-orange-400">
-          SGBVs recorded from May 1st 2023.
+          SGBVs recorded from May 20<sup>th</sup> 2023.
         </caption>
         <thead
           class="text-xs py-2 text-gray-700 uppercase bg-orange-50 dark:bg-gray-700 dark:text-gray-400"

@@ -7,10 +7,8 @@
       :reports="false"
     />
     <div class="my-10 md:text-2xl mx-10">
-      Summary of cases reported by Anonymous users and the stages involved and
-      number of current case per stage.<br />The platform currently has
-      <span class="rounded-full bg-amber-200 p-2 text-base"> {{ users }} </span>
-      accounts signed up.
+      A summary of cases reported by the victims, the number of current cases per stage, and the total number of cases reported.
+      
     </div>
     <div
       class="flex justify-center my-auto py-auto m-5 md:m-10 overflow-x-scroll w-screen"
