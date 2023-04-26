@@ -30,7 +30,9 @@
           </span>
           <span>
             <h3 class="font-bold leading-tight">Problem Statement</h3>
-            <p class="text-sm text-gray-500">Sexual Gender Based Violence Outrise</p>
+            <p class="text-sm text-gray-500">
+              Sexual Gender Based Violence Outrise
+            </p>
           </span>
         </li>
         <li
@@ -327,19 +329,28 @@
       <div class="my-1 text-gray-800 mx-2 text-lg">
         Target Outcome:
         <span class="text-sm rounded-full bg-white font-bold px-4 mx-1 py-1">
-          predict red zones and work with stakeholders (hospitals, law
-          inforcements, social workers and community members)</span
-        >
-        to prevent or reduce cases.
+          Map hotspot areas, predict the number of SGBV cases and timing of
+          violations, and thereafter work with duty-bearers, including
+          hospitals, law enforcement officials, social workers, and community
+          members, to ensure that services are put in place to prevent SGBV and
+          provide assistance to the victims. 
+        </span>
       </div>
       <hr class="my-2" />
       <div class="mt-3 text-gray-800 mx-2 text-sm mx-auto text-center">
-        🗈 Kindly note, our Machine Learning Algorithm is built using  <span class="rounded-full bg-gray-900 text-white font-bold px-4 mx-1 py-1">
-         Python</span
-        > and takes the
-        <span class=" rounded-full bg-gray-900 text-white font-bold px-4 mx-1 py-1">
+        🗈 Kindly note, our Machine Learning Algorithm is built using
+        <span
+          class="rounded-full bg-gray-900 text-white font-bold px-4 mx-1 py-1"
+        >
+          Python</span
+        >
+        and takes the
+        <span
+          class="rounded-full bg-gray-900 text-white font-bold px-4 mx-1 py-1"
+        >
           Poisson Model</span
-        > authoring.
+        >
+        authoring.
       </div>
     </div>
 
@@ -384,23 +395,22 @@ export default {
       onValue(customerRef, (snapshot) => {
         const data = snapshot.val();
         if (data != null) {
-        let keys = Object.keys(data);
-        for (let i = 0; i < keys.length; i++) {
-          let k = keys[i];
-          let values = data[k];
-          if (
-            !this.casesReported.includes(values) &&
-            !this.casesKeys.includes(k)
-          ) {
-            this.casesReported.push(values);
-            this.casesKeys.push(k);
+          let keys = Object.keys(data);
+          for (let i = 0; i < keys.length; i++) {
+            let k = keys[i];
+            let values = data[k];
+            if (
+              !this.casesReported.includes(values) &&
+              !this.casesKeys.includes(k)
+            ) {
+              this.casesReported.push(values);
+              this.casesKeys.push(k);
+            }
           }
+          this.cases = this.casesReported.length;
+        } else {
+          this.cases = 0;
         }
-        this.cases = this.casesReported.length;
-      }
-      else{
-        this.cases = 0;
-      }
       });
     },
 
@@ -462,21 +472,20 @@ export default {
       const customerRef = ref(db, "users");
       onValue(customerRef, (snapshot) => {
         const data = snapshot.val();
-        if (data != null) { 
-        let keys = Object.keys(data);
-        for (let i = 0; i < keys.length; i++) {
-          let k = keys[i];
-          let values = data[k];
-          if (!this.users.includes(values) && !this.usersKeys.includes(k)) {
-            this.users.push(values);
-            this.usersKeys.push(k);
+        if (data != null) {
+          let keys = Object.keys(data);
+          for (let i = 0; i < keys.length; i++) {
+            let k = keys[i];
+            let values = data[k];
+            if (!this.users.includes(values) && !this.usersKeys.includes(k)) {
+              this.users.push(values);
+              this.usersKeys.push(k);
+            }
           }
+          this.users = this.users.length;
+        } else {
+          this.users = 0;
         }
-        this.users = this.users.length;
-      }
-      else{
-        this.users = 0;
-      }
       });
     },
 
