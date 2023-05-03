@@ -49,7 +49,7 @@
           <div class="px-6 py-4">
             <div class="font-bold text-xl text-center mb-2">Hospital Cases</div>
             <p class="text-gray-700 text-3xl font-bold mx-auto text-center">
-              {{ cases }}
+              {{ hospital }}
             </p>
           </div>
           <div class="px-6 pt-4 pb-2 flex justify-center">
@@ -152,6 +152,9 @@ export default {
       policeCasesReported: [],
       policeCasesKeys: [],
 
+      hospitalCasesReported: [],
+      hospitalCasesKeys: [],
+
       users: [],
       usersKeys: [],
 
@@ -216,7 +219,7 @@ export default {
     // get probonos
     getProbonos() {
       const db = getDatabase();
-      const customerRef = ref(db, "probonos");
+      const customerRef = ref(db, "probonoCases");
       onValue(customerRef, (snapshot) => {
         const data = snapshot.val();
         if (data != null) {
@@ -235,6 +238,31 @@ export default {
           this.probonos = this.probonoCasesReported.length;
         } else {
           this.probonos = 0;
+        }
+      });
+    },
+
+    getHospital() {
+      const db = getDatabase();
+      const customerRef = ref(db, "hospitalCases");
+      onValue(customerRef, (snapshot) => {
+        const data = snapshot.val();
+        if (data != null) {
+          let keys = Object.keys(data);
+          for (let i = 0; i < keys.length; i++) {
+            let k = keys[i];
+            let values = data[k];
+            if (
+              !this.hospitalCasesReported.includes(values) &&
+              !this.hospitalCasesKeys.includes(k)
+            ) {
+              this.hospitalCasesReported.push(values);
+              this.hospitalCasesKeys.push(k);
+            }
+          }
+          this.hospital = this.hospitalCasesReported.length;
+        } else {
+          this.hospital = 0;
         }
       });
     },
@@ -271,6 +299,7 @@ export default {
     this.getProbonos();
     this.getUsers();
     this.getPoliceCases();
+    this.getHospital();
   },
 };
 </script>
