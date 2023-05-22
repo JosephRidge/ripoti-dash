@@ -7,8 +7,8 @@
       :reports="false"
     />
     <div class="my-10 md:text-2xl mx-10">
-      A summary of cases reported by the victims, the number of current cases per stage, and the total number of cases reported.
-      
+      A summary of cases reported by the victims, the number of current cases
+      per stage, and the total number of cases reported.
     </div>
     <div
       class="flex justify-center my-auto py-auto m-5 md:m-10 overflow-x-scroll w-screen"
@@ -35,7 +35,6 @@
           >
         </div>
       </div>
-
       <!-- hospital -->
       <div>
         <div
@@ -120,6 +119,9 @@
         </div>
       </div>
     </div>
+    <!-- charts  -->
+
+    <div ref="locationChart"></div>
     <!-- <div class="text-2xl py-2 font-bold text-center my-4">Coming soon!</div> -->
     <!-- <div>
       <img
@@ -135,7 +137,7 @@
 <script>
 import Navigation from "../navigation/Navigation.vue";
 import { getDatabase, ref, onValue } from "firebase/database";
-
+import Chart from "chart.js";
 export default {
   components: {
     Navigation,
@@ -163,6 +165,8 @@ export default {
     };
   },
   methods: {
+  
+
     // get cases
     getCases() {
       const db = getDatabase();
@@ -170,23 +174,22 @@ export default {
       onValue(customerRef, (snapshot) => {
         const data = snapshot.val();
         if (data != null) {
-        let keys = Object.keys(data);
-        for (let i = 0; i < keys.length; i++) {
-          let k = keys[i];
-          let values = data[k];
-          if (
-            !this.casesReported.includes(values) &&
-            !this.casesKeys.includes(k)
-          ) {
-            this.casesReported.push(values);
-            this.casesKeys.push(k);
+          let keys = Object.keys(data);
+          for (let i = 0; i < keys.length; i++) {
+            let k = keys[i];
+            let values = data[k];
+            if (
+              !this.casesReported.includes(values) &&
+              !this.casesKeys.includes(k)
+            ) {
+              this.casesReported.push(values);
+              this.casesKeys.push(k);
+            }
           }
+          this.cases = this.casesReported.length;
+        } else {
+          this.cases = 0;
         }
-        this.cases = this.casesReported.length;
-      }
-      else{
-        this.cases = 0;
-      }
       });
     },
 
@@ -273,24 +276,22 @@ export default {
       const customerRef = ref(db, "users");
       onValue(customerRef, (snapshot) => {
         const data = snapshot.val();
-        if (data != null) { 
-        let keys = Object.keys(data);
-        for (let i = 0; i < keys.length; i++) {
-          let k = keys[i];
-          let values = data[k];
-          if (!this.users.includes(values) && !this.usersKeys.includes(k)) {
-            this.users.push(values);
-            this.usersKeys.push(k);
+        if (data != null) {
+          let keys = Object.keys(data);
+          for (let i = 0; i < keys.length; i++) {
+            let k = keys[i];
+            let values = data[k];
+            if (!this.users.includes(values) && !this.usersKeys.includes(k)) {
+              this.users.push(values);
+              this.usersKeys.push(k);
+            }
           }
+          this.users = this.users.length;
+        } else {
+          this.users = 0;
         }
-        this.users = this.users.length;
-      }
-      else{
-        this.users = 0;
-      }
       });
     },
-
     // get cases in police station
     // <a href="https://iconscout.com/icons/police-station" target="_blank">Police Station Icon</a> by <a href="https://iconscout.com/contributors/smashingstocks">Smashing Stocks</a> on <a href="https://iconscout.com">IconScout</a>
   },
