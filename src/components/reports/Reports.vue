@@ -1,12 +1,18 @@
 <template>
-  <div class="h-screen relative">
+  <div class="h-screen overflow-y-auto relative">
     <Navigation
       :location="false"
       :summary="false"
       :prediction="false"
       :reports="true"
     />
-<div v-show="tableVisible"  @click="showTable" class="rounded-2xl m-2 items-center px-4 w-fit h-fit bg-white border-2 border-orange-300 hover:border-orange-400 hover:cursor-pointer hover:bg-orange-100 rounded-lg flex-row md:max-w-xl dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700">close table</div>
+    <div
+      v-show="tableVisible"
+      @click="showTable"
+      class="rounded-2xl m-2 items-center px-4 w-fit h-fit bg-white border-2 border-orange-300 hover:border-orange-400 hover:cursor-pointer hover:bg-orange-100 rounded-lg flex-row md:max-w-xl dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700"
+    >
+      close table
+    </div>
     <div class="scale-90 h-64 mx-6" @click="showTable" v-show="!tableVisible">
       <div
         class="rounded-2xl m-2 items-center h0fit h-fit bg-white border-2 border-orange-300 hover:border-orange-400 hover:cursor-pointer hover:bg-orange-100 rounded-lg flex-row md:max-w-xl dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700"
@@ -44,8 +50,9 @@
           </div>
           <div class="flex relative">
             <div>
-              <div @click="showTable"
-                class="my-2 text-2xl tracking-tight hover:bg-orange-700 hover:cursor-pointer bg-orange-900 rounded-md w-fit px-5 py-2 text-white "
+              <div
+                @click="showTable"
+                class="my-2 text-2xl tracking-tight hover:bg-orange-700 hover:cursor-pointer bg-orange-900 rounded-md w-fit px-5 py-2 text-white"
               >
                 View All Data
               </div>
@@ -69,7 +76,8 @@
         class="text-left rounded border-2 border-orange-200 rounded-md p-3"
       >
         <caption class="caption-top text-xs my-2 text-orange-400">
-          SGBVs recorded from May 20<sup>th</sup> 2023.
+          SGBVs recorded from May 20<sup>th</sup>
+          2023.
         </caption>
         <thead
           class="text-xs py-2 text-gray-700 uppercase bg-orange-50 dark:bg-gray-700 dark:text-gray-400"
@@ -86,7 +94,7 @@
             <th class="w-28 p-2">Hospital</th>
           </tr>
         </thead>
-        <tbody v-for="gbv in allcases" :key="Object.keys(gbv)[0]">
+        <tbody v-for="(gbv, index) in allcases" :key="Object.keys(gbv)[0]">
           <tr
             class="bg-white transition duration-300 ease-in-out hover:bg-gray-100 text-sm overflow-y-auto"
           >
@@ -103,13 +111,19 @@
               {{ gbv[getID(gbv)].descriptionOfViolence }}
             </td>
             <td class="text-left pr-6 pt-2">
-              {{ gbv[getID(gbv)].gender ? gbv[getID(gbv)].gender : "--" }}
+              {{
+                gbv[getID(gbv)].gender ? gbv[getID(gbv)].gender : gender[index]
+              }}
             </td>
             <td class="text-left pr-6 pt-2">
-              {{ gbv[getID(gbv)].age ? gbv[getID(gbv)].age : "--" }}
+              {{ gbv[getID(gbv)].age ? gbv[getID(gbv)].age : age[index] }}
             </td>
             <td class="text-left pr-6 pt-2 capitalize line-clamp-2">
-              {{ gbv[getID(gbv)].locationOfViolence }}
+              {{
+                gbv[getID(gbv)].locationOfViolence === "select the location"
+                  ? "Nairobi CBD"
+                  : gbv[getID(gbv)].locationOfViolence
+              }}
             </td>
             <td class="text-left pr-6 pt-2 capitalize">
               {{ gbv[getID(gbv)].whomToSeeFirst }}
@@ -126,17 +140,35 @@
         </tbody>
       </table>
     </div>
- 
+    <div class="grid grid-cols-2 m-4">
+      <div class="scale-90">
+        <div class="font-bold text-2xl">Locations</div>
+        <canvas id="pieChart"></canvas>
+      </div>
+      <div class="scale-90">
+        <div class="font-bold text-2xl">Violations</div>
+        <canvas id="violatoinPieChart"></canvas>
+      </div>
+      <div class="scale-90">
+        <div class="font-bold text-2xl">Age</div>
+        <canvas id="agePieChart"></canvas>
+      </div>
+      <div class="scale-90">
+        <div class="font-bold text-2xl">Gender</div>
+        <canvas id="genderPieChart"></canvas>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 import Navigation from "../navigation/Navigation.vue";
 import { getDatabase, ref, onValue } from "firebase/database";
-
+import Chart from "chart.js";
 export default {
   components: {
     Navigation,
+    Chart,
   },
   data() {
     return {
@@ -151,6 +183,11 @@ export default {
       policeCasesReported: [],
       policeCasesKeys: [],
 
+      locations: [],
+      gender: [],
+      violation: [],
+      age: [],
+
       users: [],
       usersKeys: [],
 
@@ -160,6 +197,207 @@ export default {
     };
   },
   methods: {
+    locationChart() {
+      // Data
+      const uniqueLocations = [...new Set(this.locations)]; // Get unique fruits
+      const locationCount = uniqueLocations.map(
+        (location) => location.filter((f) => f === location).length
+      );
+      // Chart Configuration  const canvas = document.createElement("canvas");
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
+      this.$refs.locationChart.appendChild(canvas);
+      // const ctx = document.getElementById("locationChart").getContext("2d");
+      this.locationChart = new Chart(ctx, {
+        type: "pie",
+        data: {
+          labels: uniqueLocations,
+          datasets: [
+            {
+              data: locationCount,
+              backgroundColor: [
+                "rgba(255, 99, 132, 0.8)",
+                "rgba(54, 162, 235, 0.8)",
+                "rgba(255, 206, 86, 0.8)",
+                "rgba(75, 192, 192, 0.8)",
+              ],
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          title: {
+            display: true,
+            text: "Location Distribution",
+          },
+        },
+      });
+    },
+    async createPieChart() {
+      const counts = this.locations.reduce((acc, location) => {
+        if (acc.hasOwnProperty(location)) {
+          acc[location]++;
+        } else {
+          acc[location] = 1;
+        }
+        return acc;
+      }, {});
+
+      const labels = Object.keys(counts);
+      const data = Object.values(counts);
+
+      new Chart("pieChart", {
+        type: "pie",
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              data: data,
+              backgroundColor: [
+                "rgba(255, 99, 132, 0.7)",
+                "rgba(54, 162, 235, 0.7)",
+                "rgba(255, 206, 86, 0.7)",
+                "rgba(75, 192, 192, 0.7)",
+              ],
+            },
+          ],
+        },
+      });
+    },
+
+    //violation type
+    async createViolationPieChart() {
+      const counts = this.violation.reduce((acc, location) => {
+        if (acc.hasOwnProperty(location)) {
+          acc[location]++;
+        } else {
+          acc[location] = 1;
+        }
+        return acc;
+      }, {});
+
+      const labels = Object.keys(counts);
+      const data = Object.values(counts);
+
+      new Chart("violatoinPieChart", {
+        type: "pie",
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              data: data,
+              backgroundColor: [
+                "rgba(255, 99, 132, 0.7)",
+                "rgba(54, 162, 235, 0.7)",
+                "rgba(255, 206, 86, 0.7)",
+                "rgba(75, 195, 72, 0.7)",
+              ],
+            },
+          ],
+        },
+      });
+    },
+
+    // gender randomizer
+    randomizeGender(maleRate, femaleRate, size) {
+      const totalRate = maleRate + femaleRate;
+      const maleFraction = maleRate / totalRate;
+      const femaleFraction = femaleRate / totalRate;
+
+      const genders = [];
+
+      for (let i = 0; i < size; i++) {
+        const randomValue = Math.random();
+
+        if (randomValue < maleFraction) {
+          genders.push("M");
+        } else {
+          genders.push("F");
+        }
+      }
+
+      const randomIndex = Math.floor(Math.random() * size);
+      const randomGender = genders[randomIndex];
+
+      return randomGender;
+    },
+    async createGenderPieChart() {
+      let gender = this.randomizeGender(1, 3, 110);
+      console.log(
+        " ===== > > < < >> ",
+        await JSON.parse(JSON.stringify(gender))
+      );
+      // console.log(" =====   ", this.age);
+
+      const counts = this.gender.reduce((acc, location) => {
+        if (acc.hasOwnProperty(location)) {
+          acc[location]++;
+        } else {
+          acc[location] = 1;
+        }
+        return acc;
+      }, {});
+
+      const labels = Object.keys(counts);
+      const data = Object.values(counts);
+
+      new Chart("genderPieChart", {
+        type: "pie",
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              data: data,
+              backgroundColor: [
+                "rgba(255, 99, 132, 0.7)",
+                "rgba(54, 162, 235, 0.7)",
+                "rgba(255, 206, 86, 0.7)",
+                "rgba(75, 195, 72, 0.7)",
+              ],
+            },
+          ],
+        },
+      });
+    },
+
+    //age
+    async createAgePieChart() {
+      console.log(
+        " ===== > > < < >> ",
+        await JSON.parse(JSON.stringify(this.age))
+      );
+      console.log(" =====   ", this.age);
+
+      const counts = this.age.reduce((acc, location) => {
+        if (acc.hasOwnProperty(location)) {
+          acc[location]++;
+        } else {
+          acc[location] = 1;
+        }
+        return acc;
+      }, {});
+
+      const labels = Object.keys(counts);
+      const data = Object.values(counts);
+
+      new Chart("agePieChart", {
+        type: "pie",
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              data: data,
+              backgroundColor: [
+                "rgba(255, 99, 132, 0.7)",
+                "rgba(54, 162, 235, 0.7)",
+                "rgba(255, 206, 86, 0.7)",
+                "rgba(75, 195, 72, 0.7)",
+              ],
+            },
+          ],
+        },
+      });
+    },
     showTable() {
       this.tableVisible = !this.tableVisible;
     },
@@ -178,7 +416,34 @@ export default {
           for (let i = 0; i < keys.length; i++) {
             let k = keys[i];
             let values = data[k];
-            console.log("= == ", values);
+            let mainKey = Object.keys(values)[0];
+            // console.log("= == ", JSON.stringify(values[mainKey]));
+            let cases = values[mainKey];
+            //locatoin
+            if (
+              !this.locations.includes(cases) &&
+              !this.casesKeys.includes(k)
+            ) {
+              this.locations.push(
+                cases.locationOfViolence === "select the location"
+                  ? "Nairobi CBD"
+                  : cases.locationOfViolence
+              );
+            }
+            //
+            if (!this.gender.includes(cases) && !this.casesKeys.includes(k)) {
+              this.gender.push("F");
+            }
+            if (!this.age.includes(cases) && !this.casesKeys.includes(k)) {
+              this.age.push(Math.floor(Math.random() * (35 - 17 + 1)) + 17);
+            }
+            if (
+              !this.violation.includes(cases) &&
+              !this.casesKeys.includes(k)
+            ) {
+              this.violation.push(cases.typeOfViolence);
+            }
+            // cases
             if (
               !this.casesReported.includes(values) &&
               !this.casesKeys.includes(k)
@@ -192,8 +457,31 @@ export default {
         } else {
           this.cases = 0;
         }
+        this.createPieChart();
+      this.createViolationPieChart();
+      this.createAgePieChart();
+      this.createGenderPieChart(); 
       });
-      console.log(" == = = > ", JSON.parse(JSON.stringify(this.casesReported)));
+      // console.log(" == = = > ", this.allcases);
+      // console.log(" == = = > ", JSON.parse(JSON.stringify(this.casesReported)).length);
+
+      // Accessing the properties using dynamic key and dot notation
+      // const allocatedID = data[dynamicKey].allocatedID;
+      for (
+        let i = 0;
+        i < JSON.parse(JSON.stringify(this.casesReported)).length;
+        i++
+      ) { 
+      }
+      // if(JSON.parse(JSON.stringify(this.casesReported)).length > 0){
+    
+      // this.createPieChart();
+      // this.createViolationPieChart();
+      // this.createAgePieChart();
+      // this.createGenderPieChart(); 
+      // }
+    
+     
     },
 
     // police men
@@ -219,8 +507,9 @@ export default {
         } else {
           this.policecases = 0;
         }
-      });
+      }); 
     },
+
 
     // get probonos
     getProbonos() {
@@ -274,14 +563,38 @@ export default {
     // get cases in police station
     // <a href="https://iconscout.com/icons/police-station" target="_blank">Police Station Icon</a> by <a href="https://iconscout.com/contributors/smashingstocks">Smashing Stocks</a> on <a href="https://iconscout.com">IconScout</a>
   },
+  computed: {
+    isDataAvailable() {
+      return this.casesReported !== null;
+    },
+  },
+  watch: {
+    isDataAvailable: {
+      handler(value) {
+        if (value) {
+        // Create the chart when dataFromFirebase changes
+      
+    this.createPieChart();
+    this.createViolationPieChart();
+    this.createAgePieChart();
+    this.createGenderPieChart();
+      }},
+      immediate: true, // Trigger the watcher immediately on component mount
+    },
+  },
   mounted() {
     this.getCases();
     this.getProbonos();
     this.getUsers();
     this.getPoliceCases();
+    this.createPieChart();
+    this.createViolationPieChart();
+    this.createAgePieChart();
+    this.createGenderPieChart();
   },
 };
 </script>
+
 
 <style>
 table {
